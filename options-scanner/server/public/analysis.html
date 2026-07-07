@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Analysis — Full Report</title>
+<style>
+  :root { --bg: #0a0e17; --card: #111827; --border: #1e293b; --text: #e2e8f0; --muted: #94a3b8; --green: #22c55e; --red: #ef4444; --blue: #3b82f6; --yellow: #eab308; --purple: #a855f7; --accent: #06b6d4; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+  h1 { font-size: 1.8rem; margin-bottom: 4px; }
+  h2 { font-size: 1.3rem; color: var(--accent); margin: 24px 0 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+  h3 { font-size: 1rem; color: var(--muted); margin: 12px 0 8px; }
+  .search-bar { display: flex; gap: 12px; margin: 20px 0; }
+  .search-bar input { flex: 1; padding: 12px 16px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 1rem; }
+  .search-bar button { padding: 12px 24px; background: var(--accent); color: #000; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 1rem; }
+  .search-bar button:hover { opacity: 0.9; }
+  .search-bar button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; }
+  .stat { text-align: center; }
+  .stat .value { font-size: 1.5rem; font-weight: 700; }
+  .stat .label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; }
+  .up { color: var(--green); }
+  .down { color: var(--red); }
+  .neutral { color: var(--muted); }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+  .badge-buy { background: rgba(34,197,94,0.2); color: var(--green); }
+  .badge-sell { background: rgba(239,68,68,0.2); color: var(--red); }
+  .badge-watch { background: rgba(234,179,8,0.2); color: var(--yellow); }
+  .badge-neutral { background: rgba(148,163,184,0.2); color: var(--muted); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th { text-align: left; padding: 10px 8px; border-bottom: 2px solid var(--border); color: var(--muted); font-weight: 600; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px; }
+  td { padding: 10px 8px; border-bottom: 1px solid var(--border); }
+  tr:hover { background: rgba(255,255,255,0.03); }
+  .chart-container { background: #0d1117; border-radius: 8px; padding: 16px; overflow-x: auto; }
+  .chart-container pre { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.7rem; line-height: 1.2; color: var(--text); }
+  .score-bar { display: flex; align-items: center; gap: 8px; }
+  .score-bar .bar { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .score-bar .fill { height: 100%; border-radius: 4px; }
+  .setup-row td { vertical-align: top; }
+  .reason { font-size: 0.75rem; color: var(--muted); max-width: 300px; }
+  .news-item { padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .news-item:last-child { border-bottom: none; }
+  .news-item a { color: var(--accent); text-decoration: none; }
+  .news-item a:hover { text-decoration: underline; }
+  .news-item .meta { font-size: 0.75rem; color: var(--muted); }
+  .loading { text-align: center; padding: 40px; color: var(--muted); }
+  .loading .spinner { display: inline-block; width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .error { background: rgba(239,68,68,0.1); border: 1px solid var(--red); border-radius: 8px; padding: 16px; color: var(--red); }
+  #results { display: none; }
+  .section-a { }
+  .section-b { }
+  .section-c { }
+  .section-d { }
+  .prediction-card { display: flex; gap: 24px; align-items: center; }
+  .prediction-price { font-size: 2rem; font-weight: 700; }
+  .forecast-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 12px; }
+  .forecast-day { background: var(--bg); border-radius: 8px; padding: 10px; text-align: center; }
+  .forecast-day .day { font-size: 0.7rem; color: var(--muted); }
+  .forecast-day .price { font-size: 1.1rem; font-weight: 600; }
+  .forecast-day .change { font-size: 0.75rem; }
+  .forecast-day .conf { font-size: 0.65rem; color: var(--muted); }
+  @media (max-width: 768px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .forecast-grid { grid-template-columns: repeat(3, 1fr); }
+    table { font-size: 0.7rem; }
+    th, td { padding: 6px 4px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>📊 Stock Analysis</h1>
+  <p style="color:var(--muted)">Full report with market conditions, charts, prediction, and high-conviction trade setups</p>
+
+  <div class="search-bar">
+    <input type="text" id="symbol" placeholder="Enter ticker symbol (e.g., AAPL, SPY, NVDA)" value="AAPL" autofocus>
+    <button id="analyzeBtn" onclick="runAnalysis()">Analyze</button>
+  </div>
+
+  <div id="loading" class="loading" style="display:none">
+    <div class="spinner"></div>
+    <p style="margin-top:12px">Analyzing market data, computing indicators, generating trade setups...</p>
+  </div>
+
+  <div id="error" style="display:none"></div>
+  <div id="results">
+
+    <!-- Section A: Market Conditions -->
+    <div class="section-a">
+      <h2>A. Market Conditions</h2>
+      <div id="marketConditions" class="card"></div>
+    </div>
+
+    <!-- Section B: Technical Analysis & Prediction -->
+    <div class="section-b">
+      <h2>B. Technical Analysis & Price Prediction</h2>
+
+      <div id="scoreCard" class="card"></div>
+
+      <div class="grid-2">
+        <div id="indicators" class="card"></div>
+        <div id="prediction" class="card"></div>
+      </div>
+
+      <h3>Price Chart (1Y)</h3>
+      <div id="priceChartImg" style="margin-bottom:12px"></div>
+      <div id="priceChart" class="card chart-container"></div>
+
+      <h3>Volume Chart</h3>
+      <div id="volumeChart" class="card chart-container"></div>
+    </div>
+
+    <!-- Section C: High Conviction Trade Setups -->
+    <div class="section-c">
+      <h2>C. High Conviction Trade Setups</h2>
+      <div id="setups" class="card"></div>
+    </div>
+
+    <!-- Section D: News -->
+    <div class="section-d">
+      <h2>D. News & Catalysts</h2>
+      <div id="news" class="card"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API = window.location.port === '5173' ? 'http://localhost:4000' : '';
+
+async function runAnalysis() {
+  const symbol = document.getElementById('symbol').value.trim().toUpperCase();
+  if (!symbol) return;
+
+  const btn = document.getElementById('analyzeBtn');
+  const loading = document.getElementById('loading');
+  const results = document.getElementById('results');
+  const error = document.getElementById('error');
+
+  btn.disabled = true;
+  btn.textContent = 'Analyzing...';
+  loading.style.display = 'block';
+  results.style.display = 'none';
+  error.style.display = 'none';
+
+  try {
+    const res = await fetch(`${API}/api/analysis/full/${symbol}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+    const data = await res.json();
+    renderReport(data);
+    results.style.display = 'block';
+  } catch (e) {
+    error.innerHTML = `<div class="error">Error: ${e.message}</div>`;
+    error.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Analyze';
+    loading.style.display = 'none';
+  }
+}
+
+function fmt(v, decimals = 2) {
+  if (v == null) return 'N/A';
+  return typeof v === 'number' ? v.toFixed(decimals) : v;
+}
+
+function pct(v, decimals = 2) {
+  if (v == null) return 'N/A';
+  return (v * 100).toFixed(decimals) + '%';
+}
+
+function dirClass(v) {
+  if (v == null) return 'neutral';
+  return v > 0 ? 'up' : v < 0 ? 'down' : 'neutral';
+}
+
+function signalBadge(signal) {
+  const cls = signal?.includes('Buy') ? 'badge-buy' : signal?.includes('Avoid') || signal?.includes('Weak') ? 'badge-sell' : 'badge-watch';
+  return `<span class="badge ${cls}">${signal || 'N/A'}</span>`;
+}
+
+function scoreColor(score) {
+  if (score >= 75) return 'var(--green)';
+  if (score >= 60) return 'var(--yellow)';
+  if (score >= 45) return 'var(--muted)';
+  return 'var(--red)';
+}
+
+function renderReport(data) {
+  const s = data.symbol;
+  const b = data.sectionB;
+  const a = data.sectionA;
+  const c = data.sectionC;
+  const d = data.sectionD;
+
+  // ─── Section A: Market Conditions ─────────────────────────
+  let marketHtml = `<div class="grid-4">`;
+  for (const [name, idx] of Object.entries(a.indices || {})) {
+    const chgClass = dirClass(idx.changePercent);
+    const chgStr = idx.changePercent != null ? `<span class="${chgClass}">${pct(idx.changePercent)}</span>` : 'N/A';
+    marketHtml += `<div class="stat"><div class="value">${name}</div><div class="label">$${fmt(idx.price) || 'N/A'}</div><div>${chgStr}</div></div>`;
+  }
+  marketHtml += `</div>`;
+  marketHtml += `<div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:8px;">`;
+  marketHtml += `<strong>Regime:</strong> ${a.regime} &nbsp;|&nbsp; <strong>VIX:</strong> ${a.vixLevel || 'N/A'} &nbsp;|&nbsp; `;
+  marketHtml += `<strong>SPY Trend:</strong> ${a.spyTrend || 'N/A'}`;
+  marketHtml += `<br><span style="color:var(--muted);font-size:0.85rem">${a.summary || ''}</span>`;
+  marketHtml += `</div>`;
+  document.getElementById('marketConditions').innerHTML = marketHtml;
+
+  // ─── Section B: Score Card ───────────────────────────────
+  const scores = b.scores || {};
+  const totalScore = scores.total || 0;
+  let scoreHtml = `<div class="grid-2">`;
+  scoreHtml += `<div class="stat"><div class="value" style="color:${scoreColor(totalScore)}">${totalScore}/100</div><div class="label">Overall Score ${signalBadge(b.signal)}</div></div>`;
+  scoreHtml += `<div class="prediction-price">$${fmt(b.analysis?.price)}</div>`;
+  scoreHtml += `</div>`;
+  // Score breakdown bars
+  const scoreLabels = {trend:'Trend', momentum:'Momentum', volume:'Liquidity', volatility:'Volatility', options:'Options', priceAction:'Price Action'};
+  scoreHtml += `<div style="margin-top:12px">`;
+  for (const [key, label] of Object.entries(scoreLabels)) {
+    const val = scores[key] || 0;
+    const maxVal = key === 'priceAction' ? 14 : 16;
+    const pct = (val / maxVal * 100).toFixed(0);
+    scoreHtml += `<div class="score-bar"><span style="width:80px;font-size:0.8rem">${label}</span><div class="bar"><div class="fill" style="width:${pct}%;background:${scoreColor(totalScore)}"></div></div><span style="font-size:0.75rem;color:var(--muted)">${val}/${maxVal}</span></div>`;
+  }
+  scoreHtml += `</div>`;
+  document.getElementById('scoreCard').innerHTML = scoreHtml;
+
+  // ─── Section B: Indicators ──────────────────────────────
+  const a2 = b.analysis || {};
+  let indHtml = `<h3 style="color:var(--text)">Technical Indicators</h3>`;
+  indHtml += `<table><tr><th>Indicator</th><th>Value</th><th>Signal</th></tr>`;
+  const indicators = [
+    ['Price', `$${fmt(a2.price)}`, ''],
+    ['Trend', a2.trend || 'N/A', a2.trend?.includes('Up') ? '🟢' : a2.trend?.includes('Down') ? '🔴' : '🟡'],
+    ['RSI (14)', fmt(a2.rsi, 1), a2.rsi > 70 ? '🔴 Overbought' : a2.rsi < 30 ? '🟢 Oversold' : '🟡 Neutral'],
+    ['SMA 20', `$${fmt(a2.sma20)}`, a2.price > a2.sma20 ? '🟢 Above' : '🔴 Below'],
+    ['SMA 50', `$${fmt(a2.sma50)}`, a2.price > a2.sma50 ? '🟢 Above' : '🔴 Below'],
+    ['SMA 200', `$${fmt(a2.sma200)}`, a2.price > a2.sma200 ? '🟢 Above' : '🔴 Below'],
+    ['ATR (14)', `$${fmt(a2.atr)}`, a2.atr ? `${(a2.atr/a2.price*100).toFixed(1)}% daily range` : ''],
+    ['MACD', fmt(a2.macd, 4), ''],
+    ['52W High', `$${fmt(a2.high52w)}`, a2.pctFrom52wHigh != null ? `${a2.pctFrom52wHigh}% from high` : ''],
+    ['52W Low', `$${fmt(a2.low52w)}`, a2.pctFrom52wLow != null ? `+${a2.pctFrom52wLow}% from low` : ''],
+    ['Volume', a2.volume ? (a2.volume/1e6).toFixed(1)+'M' : 'N/A', a2.relativeVolume ? `Rel Vol: ${fmt(a2.relativeVolume,1)}x` : ''],
+  ];
+  for (const [name, val, signal] of indicators) {
+    indHtml += `<tr><td>${name}</td><td>${val}</td><td>${signal}</td></tr>`;
+  }
+  if (a2.bollinger) {
+    indHtml += `<tr><td>BB Upper</td><td>$${fmt(a2.bollinger.upper)}</td><td rowspan="3">BW: ${a2.bollinger.bandwidth || 'N/A'}% | %B: ${a2.bollinger.percentB || 'N/A'}%</td></tr>`;
+    indHtml += `<tr><td>BB Middle</td><td>$${fmt(a2.bollinger.middle)}</td></tr>`;
+    indHtml += `<tr><td>BB Lower</td><td>$${fmt(a2.bollinger.lower)}</td></tr>`;
+  }
+  indHtml += `</table>`;
+  document.getElementById('indicators').innerHTML = indHtml;
+
+  // ─── Section B: Prediction ───────────────────────────────
+  let predHtml = `<h3 style="color:var(--text)">Price Prediction</h3>`;
+  if (b.prediction) {
+    const p = b.prediction;
+    const dirColor = p.direction === 'UP' ? 'var(--green)' : p.direction === 'DOWN' ? 'var(--red)' : 'var(--muted)';
+    predHtml += `<div class="prediction-price" style="color:${dirColor}">$${fmt(p.predictedPrice)}</div>`;
+    predHtml += `<div>${p.direction === 'UP' ? '📈' : p.direction === 'DOWN' ? '📉' : '➡️'} ${p.direction} (${p.changePercent > 0 ? '+' : ''}${p.changePercent}%)</div>`;
+    predHtml += `<div style="color:var(--muted);font-size:0.85rem">Current: $${fmt(b.analysis?.price)} → Predicted: $${fmt(p.predictedPrice)}</div>`;
+  } else {
+    predHtml += `<div style="color:var(--muted)">LSTM model not yet trained. Train via <code>POST /api/predict/train/${s}</code></div>`;
+  }
+
+  if (b.forecast && b.forecast.length > 0) {
+    predHtml += `<h3 style="margin-top:16px">5-Day Forecast</h3>`;
+    predHtml += `<div class="forecast-grid">`;
+    for (const day of b.forecast) {
+      const chgColor = day.changePercent > 0 ? 'up' : day.changePercent < 0 ? 'down' : 'neutral';
+      predHtml += `<div class="forecast-day">`;
+      predHtml += `<div class="day">Day ${day.day}</div>`;
+      predHtml += `<div class="price ${chgColor}">$${fmt(day.predictedPrice)}</div>`;
+      predHtml += `<div class="change ${chgColor}">${day.changePercent > 0 ? '+' : ''}${fmt(day.changePercent)}%</div>`;
+      predHtml += `<div class="conf">Conf: ${day.confidence}%</div>`;
+      predHtml += `</div>`;
+    }
+    predHtml += `</div>`;
+  }
+  document.getElementById('prediction').innerHTML = predHtml;
+
+  // ─── Section B: Charts ──────────────────────────────────
+  // Load SVG chart
+  const chartImg = document.getElementById('priceChartImg');
+  chartImg.innerHTML = `<img src="${API}/api/chart/${s}.svg?width=800&height=400" style="width:100%;border-radius:8px" alt="${s} Price Chart">`;
+
+  if (b.priceChart) {
+    document.getElementById('priceChart').innerHTML = `<h3 style="color:var(--muted);font-size:0.85rem;margin-bottom:4px">ASCII Chart</h3><pre>${b.priceChart}</pre>`;
+  }
+  if (b.volumeChart) {
+    document.getElementById('volumeChart').innerHTML = `<pre>${b.volumeChart}</pre>`;
+  }
+
+  // ─── Section C: Trade Setups ─────────────────────────────
+  const setups = c.setups || [];
+  let setupsHtml = `<p style="color:var(--muted);font-size:0.85rem;margin-bottom:12px">Underlying: $${fmt(c.underlyingPrice)} | Expiry: ${c.selectedExpiry} | DTE: ${c.dte} | ATM IV: ${b.analysis?.options?.ivPct || 'N/A'}%</p>`;
+  if (setups.length === 0) {
+    setupsHtml += `<p style="color:var(--muted)">No high-conviction setups found for current conditions.</p>`;
+  } else {
+    setupsHtml += `<table><thead><tr>`;
+    setupsHtml += `<th>Direction</th><th>Strategy</th><th>Timeframe</th><th>Expiration</th><th>Strike</th>`;
+    setupsHtml += `<th>Est. Delta</th><th>Entry (Mid)</th><th>OI</th><th>Spread</th>`;
+    setupsHtml += `<th>Technical Reason</th><th>Stop Loss</th><th>Risk/Contract</th><th>R:R</th><th>Score</th>`;
+    setupsHtml += `</tr></thead><tbody>`;
+    for (const setup of setups) {
+      const dirClass = setup.direction === 'Bullish' ? 'up' : setup.direction === 'Bearish' ? 'down' : 'neutral';
+      setupsHtml += `<tr class="setup-row">`;
+      setupsHtml += `<td><span class="${dirClass}" style="font-weight:700">${setup.direction}</span></td>`;
+      setupsHtml += `<td>${setup.strategy}</td>`;
+      setupsHtml += `<td>${setup.timeframe}</td>`;
+      setupsHtml += `<td>${setup.expiration || c.selectedExpiry}</td>`;
+      setupsHtml += `<td>${setup.strike}</td>`;
+      setupsHtml += `<td>${setup.estDelta}</td>`;
+      setupsHtml += `<td>$${setup.entry}</td>`;
+      setupsHtml += `<td>${setup.oi}</td>`;
+      setupsHtml += `<td>${setup.spreadQuality}</td>`;
+      setupsHtml += `<td class="reason">${setup.technicalReason}</td>`;
+      setupsHtml += `<td>${setup.stopLoss}</td>`;
+      setupsHtml += `<td>$${setup.riskPerContract}</td>`;
+      setupsHtml += `<td>${setup.rrTarget}</td>`;
+      setupsHtml += `<td style="color:${scoreColor(setup.score)}">${setup.score}/10</td>`;
+      setupsHtml += `</tr>`;
+    }
+    setupsHtml += `</tbody></table>`;
+  }
+  // Chain summary
+  const cs = c.chainSummary || {};
+  setupsHtml += `<div style="margin-top:12px;color:var(--muted);font-size:0.8rem">`;
+  setupsHtml += `Calls: ${cs.totalCalls || 0} | Puts: ${cs.totalPuts || 0} | Strikes: ${cs.totalStrikes || 0} | Available Expiries: ${(c.availableExpiries || []).length}`;
+  setupsHtml += `</div>`;
+  document.getElementById('setups').innerHTML = setupsHtml;
+
+  // ─── Section D: News ─────────────────────────────────────
+  const news = d.news || [];
+  let newsHtml = '';
+  if (news.length === 0) {
+    newsHtml = `<p style="color:var(--muted)">No recent news available.</p>`;
+  } else {
+    for (const n of news) {
+      newsHtml += `<div class="news-item">`;
+      newsHtml += `<a href="${n.url}" target="_blank">${n.title}</a>`;
+      newsHtml += `<div class="meta">${n.source} · ${n.date || ''}</div>`;
+      if (n.summary) newsHtml += `<p style="font-size:0.85rem;color:var(--muted);margin-top:4px">${n.summary}</p>`;
+      newsHtml += `</div>`;
+    }
+  }
+  document.getElementById('news').innerHTML = newsHtml;
+
+  // Update page title
+  document.title = `${s} Analysis — Score ${totalScore}/100 ${b.signal}`;
+}
+
+// Allow Enter key to trigger analysis
+document.getElementById('symbol').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') runAnalysis();
+});
+
+// Auto-analyze if symbol in URL hash
+const hash = window.location.hash.slice(1);
+if (hash) {
+  document.getElementById('symbol').value = hash.toUpperCase();
+  runAnalysis();
+}
+</script>
+</body>
+</html>

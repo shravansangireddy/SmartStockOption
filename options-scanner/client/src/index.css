@@ -1,0 +1,144 @@
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #0f1117;
+  --bg-secondary: #161922;
+  --bg-card: #1c1f2e;
+  --bg-card-hover: #242839;
+  --border: #2a2e3f;
+  --text-primary: #e8eaed;
+  --text-secondary: #8b8fa3;
+  --accent-green: #00d4aa;
+  --accent-red: #ff4d6a;
+  --accent-cyan: #00bcd4;
+  --accent-orange: #ff9800;
+  --accent-blue: #448aff;
+  --accent-purple: #b388ff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3f55;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.glow-green { text-shadow: 0 0 8px rgba(0, 212, 170, 0.4); }
+.glow-red { text-shadow: 0 0 8px rgba(255, 77, 106, 0.4); }
+.glow-cyan { text-shadow: 0 0 8px rgba(0, 188, 212, 0.4); }
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.pulse-subtle {
+  animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-up {
+  animation: slide-up 0.2s ease-out;
+}
+
+/* ── Ticker Tape ── */
+.ticker-tape-container {
+  overflow: hidden;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  height: 32px;
+  display: flex;
+  align-items: center;
+}
+
+.ticker-tape-track {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  animation: ticker-scroll 30s linear infinite;
+  white-space: nowrap;
+  width: max-content;
+}
+
+.ticker-tape-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes ticker-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+
+.ticker-tape-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 24px;
+  border-right: 1px solid var(--border);
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.ticker-tape-item .ticker-symbol {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.ticker-tape-item .ticker-price {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.ticker-tape-item .ticker-change {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ── Refresh Spin ── */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}

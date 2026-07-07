@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.env
+*.db
+*.db-shm
+*.db-wal
+*.log
+.DS_Store
+Thumbs.db
+server/test.mjs
+server/test-scanner.mjs
+server/finviz_api_test.mjs
+server/finviz_csv_test.mjs
+server/finviz_react_test.mjs
