@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "tradingview-quantitative-skills": {
+      "version": "1.0.4",
+      "installedAt": 1778636670692
+    },
+    "stock-market-pro": {
+      "version": "1.2.12",
+      "installedAt": 1778636680930
+    },
+    "hive-mind": {
+      "version": "1.0.0",
+      "installedAt": 1779907996187
+    }
+  }
+}

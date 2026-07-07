@@ -1,0 +1,22 @@
+node_modules/
+dist/
+.env
+*.db
+*.db-shm
+*.db-wal
+*.log
+.DS_Store
+Thumbs.db
+.clahub/
+.openclaw/
+openclaw-workspace-state.json
+options-scanner/SmartStockOption/
+options-scanner - Copy/
+email_payload.json
+daily_summary_2026-05-22.html
+test-output.txt
+tmp_gmail_check.py
+temp/
+state/
+claude/
+.claclawhub/

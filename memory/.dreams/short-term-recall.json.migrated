@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "updatedAt": "2026-05-08T01:53:22.537Z",
+  "entries": {
+    "memory:memory/2026-04-28.md:27:58": {
+      "key": "memory:memory/2026-04-28.md:27:58",
+      "path": "memory/2026-04-28.md",
+      "startLine": 27,
+      "endLine": 58,
+      "source": "memory",
+      "snippet": "- Cancel COST stop-limit order - Sell COST $1050C x4 at market ## Top Trade Recommendations (Apr 28 midday update) 1. NVDA $210C May 22 — buy on bounce from $208-210, limit $8.50 2. NVDA $210/$220C spread May 22 — limit $5.00 3. AVGO $395C May 22 — WAIT for $395 bounce confirmation 4. TSLA $380P May 22 — short setup if breaks $373 ## Schwab API Setup - schwabdev v3.0.3 installed - Skills ready but API credentials NOT configured yet - Shravan needs to: 1) Register at developer.schwab.com, 2) Create Personal app, 3) Set redirect URI to https://localhost, 4) Get API key + secret, 5) Run openclaw config set schwab.api_key / schwab.app_secret, 6) Run auth.py ## Current Positions — Robinhood (a",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-05-08T01:53:22.537Z",
+      "lastRecalledAt": "2026-05-08T01:53:22.537Z",
+      "queryHashes": [
+        "816ef8ec55d9"
+      ],
+      "recallDays": [
+        "2026-05-07"
+      ],
+      "conceptTags": [
+        "stop-limit",
+        "208-210",
+        "8.50",
+        "5.00",
+        "v3.0.3",
+        "developer.schwab.com",
+        "schwab.api-key",
+        "schwab.app-secret"
+      ]
+    },
+    "memory:memory/2026-04-27.md:1:30": {
+      "key": "memory:memory/2026-04-27.md:1:30",
+      "path": "memory/2026-04-27.md",
+      "startLine": 1,
+      "endLine": 30,
+      "source": "memory",
+      "snippet": "# 2026-04-27 ## Session: Clawdia meets Alex - My name: Clawdia 🦀 - Human's name: Shravan (not Alex — my mistake!) - Shravan is an options trader on Public.com - Installed Public.com skill from https://github.com/PublicDotCom/claw-skill-public-dot-com - API key saved to .secrets/public_com_secret.txt - Account 5OQ38396 (Brokerage), also has 3CT35665 (Bond) ## Alex's Portfolio (as of Apr 27) - COST $1050C May 1 x4: -$204 (52.6% loss), delta 0.04, 4 DTE — DEAD - ZS shares 0.48: $64.68, down 35.3% - Cash: $108.08 - Total equity: $356.76 - Note: Alex mentioned positions on other platforms (MSFT $420C, TSLA $380C, LMT $550C x2, NOK $10C x13, ONDS $12C x2, NFLX $100C, XOM $145P) — these may be o",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-05-08T01:53:22.537Z",
+      "lastRecalledAt": "2026-05-08T01:53:22.537Z",
+      "queryHashes": [
+        "816ef8ec55d9"
+      ],
+      "recallDays": [
+        "2026-05-07"
+      ],
+      "conceptTags": [
+        "public.com",
+        "secrets/public-com-secret.txt",
+        "52.6",
+        "0.04",
+        "0.48",
+        "64.68",
+        "35.3",
+        "108.08"
+      ]
+    }
+  }
+}
