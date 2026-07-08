@@ -2078,7 +2078,7 @@ app.get('/api/provider-status', async (req, res) => {
     yahoo: { ok: true, label: 'Yahoo Finance', capabilities: ['quotes', 'options', 'history', 'scanner'] },
     finnhub: { ok: false, label: 'Finnhub', capabilities: [] },
     alphavantage: { ok: false, label: 'Alpha Vantage', capabilities: [] },
-    public: { ok: false, label: 'Public.com', capabilities: [] },
+    public: { ok: false, label: 'Public.com (removed)', capabilities: [] },
   };
 
   // Check each provider
