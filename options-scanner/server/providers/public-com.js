@@ -19,7 +19,7 @@
  */
 
 const PUBLIC_BASE = 'https://api.public.com';
-const PUBLIC_SECRET = process.env.PUBLIC_COM_API_KEY || 'your_public_com_key_here';
+const PUBLIC_SECRET = process.env.PUBLIC_COM_API_KEY || process.env.PUBLIC_API_KEY || '';
 
 // ─── Token & Account Cache ─────────────────────────────────────
 let _accessToken = null;

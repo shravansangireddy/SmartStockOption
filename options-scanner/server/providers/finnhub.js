@@ -6,7 +6,7 @@
  */
 
 const FINNHUB_BASE = 'https://finnhub.io/api/v1'
-const FINNHUB_TOKEN = process.env.FINNHUB_TOKEN || 'your_finnhub_token_here'
+const FINNHUB_TOKEN = process.env.FINNHUB_TOKEN || ''
 
 async function finnhubFetch(endpoint, params = {}) {
   const url = new URL(`${FINNHUB_BASE}${endpoint}`)

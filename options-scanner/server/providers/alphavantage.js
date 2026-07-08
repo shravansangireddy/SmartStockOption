@@ -15,7 +15,7 @@
  */
 
 const AV_BASE = 'https://www.alphavantage.co/query'
-const AV_KEY = process.env.ALPHAVANTAGE_API_KEY || 'your_alphavantage_key_here'
+const AV_KEY = process.env.ALPHAVANTAGE_API_KEY || '';
 
 async function avFetch(params, timeoutMs = 15000) {
   const url = new URL(AV_BASE)
