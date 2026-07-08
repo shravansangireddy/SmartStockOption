@@ -6,11 +6,11 @@
  */
 
 const FINNHUB_BASE = 'https://finnhub.io/api/v1'
-const FINNHUB_TOKEN = process.env.FINNHUB_TOKEN || ''
+const getFinnhubToken = () => process.env.FINNHUB_TOKEN || ''
 
 async function finnhubFetch(endpoint, params = {}) {
   const url = new URL(`${FINNHUB_BASE}${endpoint}`)
-  url.searchParams.set('token', FINNHUB_TOKEN)
+  url.searchParams.set('token', getFinnhubToken())
   for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v)
   const res = await fetch(url.toString(), {
     headers: { 'User-Agent': 'OptScan/1.0' },
